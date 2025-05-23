@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ElectroShop - Cart</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .cart-container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+    .cart-item img {
+      width: 80px;
+      height: auto;
+    }
+    .cart-item h4 {
+      flex: 1;
+      margin-left: 15px;
+    }
+    .remove-btn {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .cart-summary {
+      text-align: right;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    .checkout-btn {
+      margin-top: 10px;
+      background-color: green;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ElectroShop</h1>
+    <nav>
+      <a href="index1.html">Home</a>
+      <a href="products1.html">Products</a>
+      <a href="cart1.html">Cart (<span id="cart-count">0</span>)</a>
+    </nav>
+  </header>
+    
+  </header>
+
+  <main class="cart-container">
+    <h2>Your Cart</h2>
+    <div id="cart-items">
+      <!-- Cart items will load here -->
+    </div>
+    <div class="cart-summary" id="cart-summary">
+      <!-- Total will be shown here -->
+    </div>
+    <button class="checkout-btn" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+  </main>
+
+  <script src="data/products.js"></script>
+  <script>
+    function getCart() {
+      return JSON.parse(localStorage.getItem("cart")) || [];
+    }
+
+    function removeFromCart(id) {
+      const cart = getCart().filter(item => item !== id);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+      updateCartUI();
+    }
+
+    function renderCart() {
+      const cartItems = getCart();
+      const container = document.getElementById("cart-items");
+      const summary = document.getElementById("cart-summary");
+      container.innerHTML = "";
+
+      if (cartItems.length === 0) {
+        container.innerHTML = "<p>Your cart is empty.</p>";
+        summary.textContent = "";
+        return;
+      }
+
+      let total = 0;
+      cartItems.forEach(id => {
+        const product = products.find(p => p.id === id);
+        if (product) {
+          total += product.price;
+          container.innerHTML += `
+            <div class="cart-item">
+              <img src="${product.image}" alt="${product.name}" />
+              <h4>${product.name}</h4>
+              <p>$${product.price.toFixed(2)}</p>
+              <button class="remove-btn" onclick="removeFromCart(${product.id})">Remove</button>
+            </div>
+          `;
+        }
+      });
+
+      summary.textContent = `Total: $${total.toFixed(2)}`;
+    }
+
+    function updateCartUI() {
+      const count = getCart().length;
+      document.getElementById("cart-count").textContent = count;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCart();
+      updateCartUI();
+    });
+  </script>
+</body>
+</html>
+``

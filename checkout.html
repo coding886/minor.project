@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout - My Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+   
+      <h1>checkout-cart</h1>
+      <nav>
+        <a href="index1.html">Home</a>
+        <a href="product1.html">Products</a>
+        <a href="cart1.html">Cart (<span id="cart-count">0</span>)</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="checkout-page">
+    <h2>Checkout</h2>
+
+    <div id="checkout-cart" class="checkout-cart"></div>
+
+    <form id="checkout-form">
+      <h3>Shipping Details</h3>
+      <input type="text" placeholder="Full Name" required />
+      <input type="text" placeholder="Address" required />
+      <input type="email" placeholder="Email" required />
+
+      <h3>Payment Method</h3>
+      <select required>
+        <option value="">Select Payment</option>
+        <option value="credit">Credit Card</option>
+        <option value="google pay">phone pe</option>
+      </select>
+
+      <button type="submit">Place Order</button>
+    </form>
+
+    <div id="confirmation" class="confirmation-message"></div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 My E-Commerce Store</p>
+  </footer>
+
+  
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      updateCartUI();
+
+      const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+      const cartContainer = document.getElementById("checkout-cart");
+
+      if (cartItems.length === 0) {
+        cartContainer.innerHTML = "<p>Your cart is empty.</p>";
+        document.getElementById("checkout-form").style.display = "none";
+        return;
+      }
+
+      let total = 0;
+      cartContainer.innerHTML = cartItems.map(item => {
+        total += item.price;
+        return `<p>${item.name} - $${item.price.toFixed(2)}</p>`;
+      }).join("");
+      cartContainer.innerHTML += `<p><strong>Total: $${total.toFixed(2)}</strong></p>`;
+
+      document.getElementById("checkout-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        localStorage.removeItem("cart");
+        updateCartUI();
+        document.getElementById("checkout-form").style.display = "none";
+        cartContainer.style.display = "none";
+        document.getElementById("confirmation").innertext = "<h3>Thank you for your order!</h3><p>Your items will be shipped soon.</p>";
+      });
+    });
+  </script>
+</body>
+</html>
